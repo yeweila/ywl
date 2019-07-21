@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+{% block content%}
+    <h1>{{ post.title }}</h1>
+    <p class="title">
+        Published{{ post.publish }} by {{ post.author }}
+    </p>
+    {{ post.body|linebreaks }}
+    <p>
+        <a href="{% url 'post_share' post.id %}">Share this post</a>
+    </p>
+    {% with comments.count as totle_comments %}
+        <h2>{{ totle_comments }}comment {{ totle_comments|pluralize }}</h2>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="comment">
+        <p class="info">
+            Comment {{ forloop.counter }} by {{ comment.name }}
+            {{ comment.created }}
+        </p>
+        {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>There are no comment yet</p>
+    {% endfor %}
+    {% if new_comment %}
+        <h2> your comment has been add</h2>
+    {% else %}
+        <h2>add a new comment</h2>
+    <form action="" method="post">
+        {{ comment_form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="add comment"></p>
+    </form>
+    {% endif %}
+{% endblock %}
